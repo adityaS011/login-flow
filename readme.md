@@ -20,7 +20,7 @@ npm run dev
 
 ## Architecture
 
-State lives in a single `useReducer` (`signupReducer.ts`). The `useSignupWizard` hook wraps it, owns all async logic, and exposes a clean interface — components never call `dispatch` directly. This keeps each file small and concerns clearly separated.
+The flow is structured as a self-contained feature module. UI components are kept "dumb" — they receive props and call callbacks. All wizard logic lives in one custom hook.
 
 ```
 src/
@@ -29,12 +29,40 @@ src/
   features/signup/
     components/               # ActionBar, WizardCard, StepRenderer, CompletionModal
     steps/                    # account-type, phone, otp, name, password
-    SignupFlow.tsx             # Top-level layout
-    signupReducer.ts          # All state transitions in one place
-    useSignupWizard.ts        # Async logic, loading, toast, navigation
-    validation.ts             # Pure per-step validation functions
+    SignupFlow.tsx             # Top-level layout: card + toast + completion modal
+    signupReducer.ts          # Pure reducer — all state transitions in one place
+    types.ts                  # SignupData, FieldErrors, StepId enum, steps array
+    useSignupWizard.ts        # Custom hook: API calls, validation, loading, toast
+    validation.ts             # Pure per-step validation functions (no dependencies)
   styles/                     # tokens.ts, GlobalStyle.ts, layout.ts, typography.ts
 ```
+
+### State layer
+
+All form data and navigation state is managed by a single `useReducer`. The reducer handles four actions — `Patch` (partial field update), `Next`, `Back`, `Complete`, and `Reset` — and nothing else. It is a pure function with no side effects.
+
+`useSignupWizard` wraps the reducer and is the only place that calls `dispatch`. It also owns three pieces of local state that don't belong in the reducer: `isLoading` (transient async flag), `errors` (per-field validation result), and `toast` (notification message). The hook exposes a flat interface to `SignupFlow`:
+
+```
+step, data, progress, errors, isLoading, isFirstStep, isLastStep,
+completed, summary, toast,
+next, back, reset, update, resendOtp, dismissToast
+```
+
+### Data flow
+
+```
+User input → update(partial) → clears field error → dispatches Patch
+Submit     → validateStep()  → setErrors or → API call → dispatches Next/Complete
+```
+
+Validation (`validation.ts`) is a pure function — it takes the current step and data, returns an error map, and has no imports from React. Errors are cleared field-by-field as the user types, so stale messages disappear immediately on correction.
+
+### Component layer
+
+`StepRenderer` reads `wizard.step` and renders the matching step component. Each step component receives only the slice of data and callbacks it needs — no wizard object is passed down whole. `ActionBar` owns the Back and Continue/Complete buttons; it only knows about `isLoading`, `isFirstStep`, and `nextLabel`.
+
+`WizardCard` wraps the card shell and progress bar. `CardBody` inside it gets `key={wizard.step}`, which causes React to unmount and remount the content on every step change — this is what triggers the CSS entrance animation without any animation library.
 
 ## Key Decisions
 
