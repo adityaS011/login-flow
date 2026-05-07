@@ -6,7 +6,7 @@ export const tokens = {
   muted: "#91a0b4",
   line: "#8db2ff",
   surface: "#ffffff",
-  page: "#f6f8fb",
+  default: "#F5F5F5",
   subtle: "#eef3f8",
   danger: "#dc3d2a",
   shadow: "0 10px 24px rgba(19, 44, 74, 0.1)",

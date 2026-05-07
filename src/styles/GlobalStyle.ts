@@ -8,7 +8,7 @@ export const GlobalStyle = createGlobalStyle`
 
   :root {
     color: ${tokens.primary};
-    background: ${tokens.page};
+    background: ${tokens.default};
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
       "Segoe UI", sans-serif;
     font-synthesis: none;
@@ -20,7 +20,7 @@ export const GlobalStyle = createGlobalStyle`
     min-width: 320px;
     min-height: 100vh;
     margin: 0;
-    background: ${tokens.page};
+    background: ${tokens.default};
   }
 
   p,

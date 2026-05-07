@@ -8,7 +8,7 @@ export const Shell = styled.main`
   height: 100dvh;
   overflow: hidden;
   grid-template-columns: minmax(420px, 47%) minmax(520px, 53%);
-  background-color: ${tokens.page};
+  background-color: ${tokens.default};
   background-image: url(${groupBg});
   background-size: cover;
   background-position: center;

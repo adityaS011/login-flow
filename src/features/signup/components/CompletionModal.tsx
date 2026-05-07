@@ -5,7 +5,7 @@ import { Button } from "../../../components/Button";
 import { Modal, Overlay } from "../../../styles/layout";
 import { tokens } from "../../../styles/tokens";
 import { SignupSummary } from "../useSignupWizard";
-import successTick from "../../../assets/success_tick.svg";
+import success from "../../../assets/success_tick.svg";
 
 interface CompletionModalProps {
   onDone: () => void;
@@ -30,7 +30,7 @@ export const CompletionModal = ({ onDone, summary }: CompletionModalProps) => {
   return (
     <Overlay>
       <Modal ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="done-title" tabIndex={-1}>
-        <SuccessIcon src={successTick} alt="Success" />
+        <SuccessIcon src={success} alt="Success" />
         <Title id="done-title">You're all set!</Title>
         <Copy>Here's a quick summary of your account details</Copy>
         <SummaryList>
@@ -74,8 +74,8 @@ const SummaryList = styled.dl`
   gap: 14px;
   border-radius: 18px;
   padding: 20px;
-  background: ${tokens.page};
-  font-size: 12px;
+  background: ${tokens.default};
+  font-size: 14px;
 
   dt {
     color: ${tokens.muted};

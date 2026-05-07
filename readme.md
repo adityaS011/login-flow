@@ -38,7 +38,7 @@ src/
 
 ## Key Decisions
 
-**Form submission via `display: contents`** — The card content and footer are wrapped in a `<form style="display:contents">`. This keeps the card's flex layout intact while enabling native Enter-key submission on every step with no `onKeyDown` hacks.
+**Form submission via `display: contents`** — The card content and footer are wrapped in a `styled.form` with `display: contents`. This keeps the card's flex layout intact while enabling native Enter-key submission on every step with no `onKeyDown` hacks.
 
 **Step transitions via `key`** — `CardBody` gets `key={wizard.step}`. React remounts it on each step change, which re-triggers the CSS entrance animation automatically — no animation library needed.
 
@@ -62,6 +62,6 @@ Pure CSS keyframes via styled-components — no external library. All animations
 
 - All inputs have associated labels; errors use `role="alert"` and `aria-invalid`
 - `aria-describedby` links inputs to their hint text
-- OTP boxes have `aria-label="Digit N of 6"`; account type options use `role="radio"` / `aria-checked`
+- OTP boxes have `aria-label="OTP digit N"`; account type options use `role="radio"` / `aria-checked`
 - Focus rings are always visible; `prefers-reduced-motion` is respected globally
 
