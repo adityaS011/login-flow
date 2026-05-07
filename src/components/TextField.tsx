@@ -1,6 +1,11 @@
 import { useId, type InputHTMLAttributes, type ReactNode } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { tokens, bp } from "../styles/tokens";
+
+const hintIn = keyframes`
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+`;
 
 interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
@@ -92,4 +97,5 @@ const Input = styled.input`
 const Hint = styled.small<{ $error: boolean }>`
   color: ${({ $error }) => ($error ? tokens.danger : tokens.muted)};
   font-size: 16px;
+  animation: ${hintIn} 180ms ease;
 `;

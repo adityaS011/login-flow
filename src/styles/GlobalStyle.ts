@@ -52,4 +52,11 @@ export const GlobalStyle = createGlobalStyle`
     outline: 2px solid ${tokens.blue};
     outline-offset: 2px;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 `;

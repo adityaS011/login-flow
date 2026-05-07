@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useCallback, useReducer, useState } from "react";
 import { mockApi } from "../../api/mockApi";
 import {
   SignupActionType,
@@ -18,6 +18,7 @@ export interface SignupWizard {
   back: () => void;
   completed: boolean;
   data: SignupData;
+  dismissToast: () => void;
   errors: FieldErrors;
   isFirstStep: boolean;
   isLastStep: boolean;
@@ -28,6 +29,7 @@ export interface SignupWizard {
   resendOtp: () => void;
   step: StepId;
   summary: SignupSummary;
+  toast: string | null;
   update: (payload: Partial<SignupData>) => void;
 }
 
@@ -35,6 +37,8 @@ export const useSignupWizard = (): SignupWizard => {
   const [state, dispatch] = useReducer(signupReducer, initialSignupState);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+  const dismissToast = useCallback(() => setToast(null), []);
 
   const stepIndex = steps.indexOf(state.step);
   const progress = ((stepIndex + 1) / steps.length) * 100;
@@ -72,6 +76,7 @@ export const useSignupWizard = (): SignupWizard => {
       switch (state.step) {
         case StepId.Phone:
           await mockApi.sendOtp(`${state.data.countryCode}${state.data.phone}`);
+          setToast("OTP sent to your number");
           dispatch({ type: SignupActionType.Next });
           break;
         case StepId.Otp:
@@ -83,6 +88,14 @@ export const useSignupWizard = (): SignupWizard => {
           dispatch({ type: SignupActionType.Complete });
           break;
       }
+    } catch {
+      if (state.step === StepId.Phone) {
+        setErrors({ phone: "Failed to send OTP. Please try again." });
+      } else if (state.step === StepId.Otp) {
+        setErrors({ otp: "Invalid OTP. Please try again." });
+      } else {
+        setToast("Something went wrong. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -92,8 +105,11 @@ export const useSignupWizard = (): SignupWizard => {
     setIsLoading(true);
     try {
       await mockApi.sendOtp(`${state.data.countryCode}${state.data.phone}`);
+      setToast("OTP resent successfully");
       dispatch({ type: SignupActionType.Patch, payload: { otp: ["", "", "", ""] } });
       setErrors({});
+    } catch {
+      setToast("Failed to resend OTP. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -113,6 +129,7 @@ export const useSignupWizard = (): SignupWizard => {
     back,
     completed: state.completed,
     data: state.data,
+    dismissToast,
     errors,
     isFirstStep: state.step === StepId.Account,
     isLastStep: state.step === StepId.Password,
@@ -123,6 +140,7 @@ export const useSignupWizard = (): SignupWizard => {
     resendOtp,
     step: state.step,
     summary,
+    toast,
     update,
   };
 };

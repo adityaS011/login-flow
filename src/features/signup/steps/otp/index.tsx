@@ -30,7 +30,7 @@ export const OtpStep = ({ error, isLoading, value, onChange, onResend }: OtpStep
               }}
               aria-label={`OTP digit ${index + 1}`}
               inputMode="numeric"
-              maxLength={OTP_LENGTH}
+              maxLength={1}
               value={digit}
               $filled={Boolean(digit)}
               $error={Boolean(error)}

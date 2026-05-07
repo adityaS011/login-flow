@@ -1,7 +1,12 @@
 import { Check } from "lucide-react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Heading } from "../../../../styles/typography";
 import { tokens } from "../../../../styles/tokens";
+
+const popIn = keyframes`
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+`;
 
 export const Title = styled(Heading)`
   font-weight: 500;
@@ -50,4 +55,5 @@ export const CheckIcon = styled(Check)`
   border-radius: 50%;
   color: #fff;
   background: ${tokens.blue};
+  animation: ${popIn} 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
 `;

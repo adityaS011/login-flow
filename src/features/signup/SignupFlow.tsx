@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Toast } from "../../components/Toast";
 import { bp } from "../../styles/tokens";
 import { ActionBar } from "./components/ActionBar";
 import { CompletionModal } from "./components/CompletionModal";
@@ -31,7 +32,7 @@ export const SignupFlow = () => {
       <Panel>
         <WizardCard progress={wizard.progress}>
           <Form onSubmit={(e) => { e.preventDefault(); wizard.next(); }}>
-            <CardBody>
+            <CardBody key={wizard.step}>
               <StepRenderer wizard={wizard} />
             </CardBody>
             <ActionBar
@@ -44,6 +45,9 @@ export const SignupFlow = () => {
         </WizardCard>
       {wizard.completed && (
         <CompletionModal onDone={wizard.reset} summary={wizard.summary} />
+      )}
+      {wizard.toast && (
+        <Toast message={wizard.toast} onDismiss={wizard.dismissToast} />
       )}
       </Panel>
   );

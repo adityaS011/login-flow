@@ -1,6 +1,16 @@
 import { ReactNode } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { bp, tokens } from "../../../styles/tokens";
+
+const cardIn = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+`;
+
+const stepIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+`;
 
 interface WizardCardProps {
   children: ReactNode;
@@ -22,6 +32,7 @@ export const CardBody = styled.div`
   display: grid;
   gap: 18px;
   padding: 24px 52px 0;
+  animation: ${stepIn} 220ms ease;
 
   ${bp.mobile} {
     padding: 20px 24px 0;
@@ -38,6 +49,7 @@ const Card = styled.section`
   overflow: hidden;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.96);
+  animation: ${cardIn} 360ms ease;
 
   ${bp.mobile} {
     width: 100%;

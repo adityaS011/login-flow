@@ -24,8 +24,7 @@ export const validateStep = (step: StepId, data: SignupData): FieldErrors => {
     case StepId.Password:
       if (data.password.length < 6) {
         errors.password = "Password must be at least 6 characters.";
-      }
-      if (data.password !== data.confirmPassword) {
+      } else if (data.password !== data.confirmPassword) {
         errors.confirmPassword = "Passwords do not match.";
       }
       break;

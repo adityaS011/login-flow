@@ -1,5 +1,5 @@
 import { ChevronDown } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Wrap } from "../../../../styles/layout";
 import { Heading } from "../../../../styles/typography";
 import * as S from "./styles";
@@ -24,6 +24,7 @@ interface PhoneStepProps {
 export const PhoneStep = (props: PhoneStepProps) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const errorId = useId();
   const selected = COUNTRIES.find((c) => c.code === props.code) ?? COUNTRIES[0];
 
   useEffect(() => {
@@ -85,13 +86,15 @@ export const PhoneStep = (props: PhoneStepProps) => {
           <S.PhoneInput
             aria-invalid={Boolean(props.error)}
             aria-required="true"
+            aria-describedby={props.error ? errorId : undefined}
             inputMode="numeric"
+            maxLength={15}
             placeholder="8343989239"
             value={props.phone}
             onChange={(e) => props.onPhoneChange(e.target.value.replace(/\D/g, ""))}
           />
         </S.InputRow>
-        {props.error && <S.ErrorHint>{props.error}</S.ErrorHint>}
+        {props.error && <S.ErrorHint id={errorId} role="alert">{props.error}</S.ErrorHint>}
       </S.FieldGroup>
     </Wrap>
   );
