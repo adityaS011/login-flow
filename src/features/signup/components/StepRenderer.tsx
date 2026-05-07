@@ -37,7 +37,9 @@ export const StepRenderer = ({ wizard }: StepRendererProps) => {
       return (
         <OtpStep
           error={errors.otp}
+          isLoading={wizard.isLoading}
           onChange={(otp) => update({ otp })}
+          onResend={wizard.resendOtp}
           value={data.otp}
         />
       );

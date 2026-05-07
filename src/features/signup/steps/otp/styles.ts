@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { tokens } from "../../../../styles/tokens";
+import { tokens, bp } from "../../../../styles/tokens";
 
 export const Copy = styled.p`
   color: ${tokens.muted};
@@ -11,6 +11,10 @@ export const OtpRow = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 36px;
   max-width: 360px;
+
+  ${bp.mobile} {
+    gap: 20px;
+  }
 `;
 
 export const OtpContainer = styled.div`
@@ -19,6 +23,10 @@ export const OtpContainer = styled.div`
   flex-direction: column;
   align-items: flex-end;
   gap: 12px;
+
+  ${bp.mobile} {
+    gap: 8px;
+  }
 `;
 
 export const OtpInput = styled.input<{ $filled: boolean; $error: boolean }>`

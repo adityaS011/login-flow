@@ -4,7 +4,6 @@ import { bp } from "../../../styles/tokens";
 
 interface ActionBarProps {
   back: () => void;
-  next: () => void;
   isFirstStep?: boolean;
   isLoading?: boolean;
   nextLabel?: string;
@@ -12,7 +11,6 @@ interface ActionBarProps {
 
 export const ActionBar = ({
   back,
-  next,
   isFirstStep = false,
   isLoading = false,
   nextLabel = "Continue",
@@ -21,7 +19,7 @@ export const ActionBar = ({
     <Button disabled={isFirstStep} onClick={back} type="button" variant="secondary">
       Back
     </Button>
-    <Button isLoading={isLoading} onClick={next} type="button">
+    <Button isLoading={isLoading} type="submit">
       {nextLabel}
     </Button>
   </Bar>

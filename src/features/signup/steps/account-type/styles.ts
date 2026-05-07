@@ -1,11 +1,9 @@
 import { Check } from "lucide-react";
 import styled from "styled-components";
+import { Heading } from "../../../../styles/typography";
 import { tokens } from "../../../../styles/tokens";
 
-export const Title = styled.h2`
-  margin: 0;
-  color: ${tokens.primary};
-  font-size: 20px;
+export const Title = styled(Heading)`
   font-weight: 500;
   line-height: 1.35;
 

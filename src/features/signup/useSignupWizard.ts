@@ -1,4 +1,5 @@
-import { useMemo, useReducer, useState } from "react";
+import { useReducer, useState } from "react";
+import { mockApi } from "../../api/mockApi";
 import {
   SignupActionType,
   initialSignupState,
@@ -9,7 +10,6 @@ import { validateStep } from "./validation";
 
 export interface SignupSummary {
   accountType: string;
-  email: string;
   name: string;
   phone: string;
 }
@@ -20,10 +20,12 @@ export interface SignupWizard {
   data: SignupData;
   errors: FieldErrors;
   isFirstStep: boolean;
+  isLastStep: boolean;
   isLoading: boolean;
   next: () => void;
   progress: number;
   reset: () => void;
+  resendOtp: () => void;
   step: StepId;
   summary: SignupSummary;
   update: (payload: Partial<SignupData>) => void;
@@ -37,17 +39,13 @@ export const useSignupWizard = (): SignupWizard => {
   const stepIndex = steps.indexOf(state.step);
   const progress = ((stepIndex + 1) / steps.length) * 100;
 
-  const summary = useMemo(
-    () => ({
-      accountType:
-        state.data.accountType === AccountType.Personal ? "Personal" : "Business",
-      email: "jo****@example.com",
-      name:
-        [state.data.firstName, state.data.lastName].filter(Boolean).join(" ") || "-",
-      phone: state.data.phone ? `${state.data.countryCode} ${state.data.phone}` : "-",
-    }),
-    [state.data],
-  );
+  const summary = {
+    accountType:
+      state.data.accountType === AccountType.Personal ? "Personal" : "Business",
+    name:
+      [state.data.firstName, state.data.lastName].filter(Boolean).join(" ") || "-",
+    phone: state.data.phone ? `${state.data.countryCode} ${state.data.phone}` : "-",
+  };
 
   const update = (payload: Partial<SignupData>) => {
     const changedKeys = Object.keys(payload) as Array<keyof FieldErrors>;
@@ -59,19 +57,45 @@ export const useSignupWizard = (): SignupWizard => {
     dispatch({ type: SignupActionType.Patch, payload });
   };
 
-  const next = () => {
+  const next = async () => {
     const nextErrors = validateStep(state.step, state.data);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length) return;
 
-    if (state.step === StepId.Password) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        dispatch({ type: SignupActionType.Complete });
-      }, 1200);
-    } else {
+    if (state.step === StepId.Account || state.step === StepId.Name) {
       dispatch({ type: SignupActionType.Next });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      switch (state.step) {
+        case StepId.Phone:
+          await mockApi.sendOtp(`${state.data.countryCode}${state.data.phone}`);
+          dispatch({ type: SignupActionType.Next });
+          break;
+        case StepId.Otp:
+          await mockApi.verifyOtp(state.data.otp.join(""));
+          dispatch({ type: SignupActionType.Next });
+          break;
+        case StepId.Password:
+          await mockApi.register(state.data);
+          dispatch({ type: SignupActionType.Complete });
+          break;
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resendOtp = async () => {
+    setIsLoading(true);
+    try {
+      await mockApi.sendOtp(`${state.data.countryCode}${state.data.phone}`);
+      dispatch({ type: SignupActionType.Patch, payload: { otp: ["", "", "", ""] } });
+      setErrors({});
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -91,10 +115,12 @@ export const useSignupWizard = (): SignupWizard => {
     data: state.data,
     errors,
     isFirstStep: state.step === StepId.Account,
+    isLastStep: state.step === StepId.Password,
     isLoading,
     next,
     progress,
     reset,
+    resendOtp,
     step: state.step,
     summary,
     update,

@@ -1,10 +1,11 @@
-import { CheckCircle, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Button } from "../../../components/Button";
 import { Modal, Overlay } from "../../../styles/layout";
 import { tokens } from "../../../styles/tokens";
 import { SignupSummary } from "../useSignupWizard";
+import successTick from "../../../assets/success_tick.svg";
 
 interface CompletionModalProps {
   onDone: () => void;
@@ -29,7 +30,7 @@ export const CompletionModal = ({ onDone, summary }: CompletionModalProps) => {
   return (
     <Overlay>
       <Modal ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="done-title" tabIndex={-1}>
-        <CheckCircle color={tokens.blue} size={42} />
+        <SuccessIcon src={successTick} alt="Success" />
         <Title id="done-title">You're all set!</Title>
         <Copy>Here's a quick summary of your account details</Copy>
         <SummaryList>
@@ -41,13 +42,19 @@ export const CompletionModal = ({ onDone, summary }: CompletionModalProps) => {
           <dd>{summary.phone}</dd>
         </SummaryList>
         <Secure>
-          <ShieldCheck size={14} /> Your account is secured with bank-grade security
+          <ShieldCheck size={14} color="#22c55e" /> Your account is secured with bank-grade security
         </Secure>
         <Button onClick={onDone} type="button">Go To Dashboard</Button>
       </Modal>
     </Overlay>
   );
 };
+
+const SuccessIcon = styled.img`
+  width: 48px;
+  height: 48px;
+  margin-bottom: 8px;
+`;
 
 const Title = styled.h2`
   margin: 8px 0 6px;
@@ -57,7 +64,7 @@ const Title = styled.h2`
 const Copy = styled.p`
   margin: 0 0 20px;
   color: ${tokens.muted};
-  font-size: 12px;
+  font-size: 14px;
 `;
 
 const SummaryList = styled.dl`
@@ -86,5 +93,5 @@ const Secure = styled.p`
   gap: 4px;
   margin: 18px 0 24px;
   color: ${tokens.muted};
-  font-size: 11px;
+  font-size: 12px;
 `;

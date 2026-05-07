@@ -1,9 +1,13 @@
 import styled from "styled-components";
-import { tokens } from "./tokens";
+import { tokens, bp } from "./tokens";
 
 export const Wrap = styled.div<{ $gap?: number }>`
   display: grid;
   gap: ${({ $gap = 16 }) => $gap}px;
+
+  ${bp.mobile} {
+    gap: ${({ $gap = 8 }) => $gap}px;
+  }
 `;
 
 export const Overlay = styled.div`

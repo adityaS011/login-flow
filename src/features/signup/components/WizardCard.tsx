@@ -21,11 +21,11 @@ export const WizardCard = ({ children, progress }: WizardCardProps) => {
 export const CardBody = styled.div`
   display: grid;
   gap: 18px;
-  padding: 38px 52px 0;
+  padding: 24px 52px 0;
 
   ${bp.mobile} {
-    padding: 32px 24px 0;
-    flex: 1;
+    padding: 20px 24px 0;
+    gap: 16px;
   }
 `;
 

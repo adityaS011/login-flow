@@ -20,7 +20,8 @@ export const useOtpInputs = ({ length, onChange, value }: OtpInputConfig) => {
     if (event.key === "Backspace") {
       event.preventDefault();
       const next = [...value];
-      const target = value[index] || index === 0 ? index : index - 1;
+      const hasValue = Boolean(value[index]);
+      const target = hasValue || index === 0 ? index : index - 1;
       next[target] = "";
       onChange(next);
       focus(target);

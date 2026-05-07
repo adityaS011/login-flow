@@ -7,11 +7,13 @@ const OTP_LENGTH = 4;
 
 interface OtpStepProps {
   error?: string;
+  isLoading?: boolean;
   value: string[];
   onChange: (value: string[]) => void;
+  onResend: () => void;
 }
 
-export const OtpStep = ({ error, value, onChange }: OtpStepProps) => {
+export const OtpStep = ({ error, isLoading, value, onChange, onResend }: OtpStepProps) => {
   const otp = useOtpInputs({ length: OTP_LENGTH, onChange, value });
 
   return (
@@ -41,9 +43,12 @@ export const OtpStep = ({ error, value, onChange }: OtpStepProps) => {
         </OtpRow>
         <Message $error={Boolean(error)}>
           {error || (
-            <div>
-              Did not receive OTP? <button type="button">Resend OTP</button>
-            </div>
+            <>
+              Did not receive OTP?{" "}
+              <button disabled={isLoading} onClick={onResend} type="button">
+                Resend OTP
+              </button>
+            </>
           )}
         </Message>
       </OtpContainer>
